@@ -10,11 +10,18 @@ import {
   Plus, 
   DataAnalysis, 
   Edit, 
-  Search
+  Search,
+  Reading,
+  Fold,
+  Expand
 } from '@element-plus/icons-vue'
 
 defineProps<{
   isCollapse: boolean
+}>()
+
+defineEmits<{
+  toggleCollapse: []
 }>()
 
 const router = useRouter()
@@ -64,6 +71,15 @@ const getDefaultActive = () => {
 
 <template>
   <div class="sidebar" :style="{ width: isCollapse ? '64px' : '200px' }">
+    <!-- 系统标题 -->
+    <div class="sidebar-header">
+      <h2 class="system-title" :class="{ 'collapsed': isCollapse }">
+        <el-icon class="title-icon"><Reading /></el-icon>
+        <span v-if="!isCollapse">学生管理系统</span>
+        <span v-else>系统</span>
+      </h2>
+    </div>
+
     <el-menu
       :default-active="getDefaultActive()"
       class="sidebar-menu"
@@ -137,6 +153,21 @@ const getDefaultActive = () => {
         <template #title>系统设置</template>
       </el-menu-item>
     </el-menu>
+
+    <!-- 收起/展开按钮 -->
+    <div class="collapse-toggle">
+      <el-button
+        type="text"
+        @click="$emit('toggleCollapse')"
+        class="collapse-btn"
+        :title="isCollapse ? '展开侧边栏' : '收起侧边栏'"
+      >
+        <el-icon>
+          <Fold v-if="!isCollapse" />
+          <Expand v-else />
+        </el-icon>
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -146,11 +177,80 @@ const getDefaultActive = () => {
   transition: width 0.3s;
   flex-shrink: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.sidebar-header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #435266;
+  background-color: #2b3a4a;
+}
+
+.system-title {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-icon {
+  font-size: 20px;
+  color: #409EFF;
+}
+
+.system-title.collapsed {
+  font-size: 12px;
+  gap: 4px;
+}
+
+.system-title.collapsed .title-icon {
+  font-size: 16px;
 }
 
 .sidebar-menu {
   border-right: none;
-  height: 100%;
+  flex: 1;
+}
+
+.collapse-toggle {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.collapse-btn {
+  background-color: #409EFF;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.collapse-btn:hover {
+  background-color: #66b1ff;
+  transform: scale(1.1);
+}
+
+.collapse-btn .el-icon {
+  font-size: 16px;
 }
 
 /* 修复子菜单项的对齐问题 */
@@ -167,16 +267,38 @@ const getDefaultActive = () => {
   padding-left: 20px !important;
 }
 
-/* 折叠状态下的样式 */
-:deep(.el-menu--collapse .el-sub-menu .el-menu-item) {
-  padding-left: 20px !important;
+/* 折叠状态下所有菜单项和子菜单项高度、图标严格居中对齐 */
+:deep(.el-menu--collapse .el-menu-item),
+:deep(.el-menu--collapse .el-sub-menu__title) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 56px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+}
+:deep(.el-menu--collapse .el-menu-item .el-icon),
+:deep(.el-menu--collapse .el-sub-menu__title .el-icon) {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+/* 让所有菜单项的图标颜色和未激活时一致 */
+:deep(.el-menu--collapse .el-menu-item),
+:deep(.el-menu--collapse .el-sub-menu__title) {
+  color: #bfcbd9 !important;
+}
+:deep(.el-menu--collapse .el-menu-item.is-active),
+:deep(.el-menu--collapse .el-menu-item.is-active .el-icon) {
+  color: #409EFF !important;
 }
 
-/* 确保图标正确显示 */
-:deep(.el-menu-item .el-icon),
-:deep(.el-sub-menu__title .el-icon) {
-  margin-right: 8px;
-  width: 16px;
-  height: 16px;
+/* 隐藏折叠状态下 el-sub-menu 的箭头（>） */
+:deep(.el-menu--collapse .el-sub-menu__icon-arrow),
+:deep(.el-menu--collapse .el-sub-menu .el-sub-menu__icon-arrow) {
+  display: none !important;
 }
 </style> 

@@ -12,12 +12,13 @@ const toggleCollapse = () => {
 
 <template>
   <div class="layout-container">
-    <!-- 头部 -->
-    <Header :is-collapse="isCollapse" @toggle-collapse="toggleCollapse" />
+    <!-- 侧边栏 -->
+    <Sidebar :is-collapse="isCollapse" @toggle-collapse="toggleCollapse" />
 
-    <div class="layout-body">
-      <!-- 侧边栏 -->
-      <Sidebar :is-collapse="isCollapse" />
+    <!-- 右侧内容区域 -->
+    <div class="right-content">
+      <!-- 头部 -->
+      <Header :is-collapse="isCollapse" @toggle-collapse="toggleCollapse" />
 
       <!-- 主体内容 -->
       <div class="main-content">
@@ -35,12 +36,12 @@ const toggleCollapse = () => {
   margin: 0;
   padding: 0;
   display: flex;
-  flex-direction: column;
 }
 
-.layout-body {
+.right-content {
   flex: 1;
   display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 

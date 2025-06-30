@@ -63,7 +63,6 @@ const handleLogout = () => {
       >
         <el-icon><Expand v-if="isCollapse" /><Fold v-else /></el-icon>
       </el-button>
-      <h2 class="title">学生管理系统</h2>
     </div>
     <div class="header-right">
       <el-dropdown @command="handleCommand">
@@ -102,15 +101,7 @@ const handleLogout = () => {
 }
 
 .collapse-btn {
-  margin-right: 15px;
   font-size: 18px;
-}
-
-.title {
-  margin: 0;
-  color: #303133;
-  font-size: 18px;
-  font-weight: 600;
 }
 
 .header-right {
